@@ -6,9 +6,9 @@ export default class Renderer {
     threeApp: ThreeApp;
     canvas: HTMLCanvasElement | undefined;
     sizes: import("./Utils/Sizes").default;
-    scene: any;
     camera: import("./Camera").default;
     instance: THREE.WebGLRenderer;
+    scene: THREE.Scene;
 
     constructor() {
         this.threeApp = new ThreeApp();
@@ -25,7 +25,8 @@ export default class Renderer {
             canvas: this.canvas,
             antialias: true
         });
-
+        this.instance.setClearColor(0x111111, 1);
+        this.instance.outputEncoding = THREE.sRGBEncoding;
         this.instance.setSize(this.sizes.width, this.sizes.height);
         this.instance.setPixelRatio(this.sizes.pixelRatio);
     }

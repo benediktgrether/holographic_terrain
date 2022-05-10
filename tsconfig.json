@@ -16,5 +16,7 @@
     "strictPropertyInitialization": false,
     "outDir": "assets/js",
   },
-  "include": ["src"]
+  "include": ["src", "glsl"],
+  "exclude": ["node_modules"]
+
 }
