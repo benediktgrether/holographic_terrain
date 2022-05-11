@@ -75,17 +75,34 @@ float cnoise(vec3 P){
 
 varying float vElevation;
 
+float getElevation(vec3 _position) {
+
+  float elevation = 0.0;
+
+  // General Elevation
+  elevation += cnoise(vec3(
+    _position.xz * 0.3,
+    0.0
+  )) * 0.5;
+
+  // Smaller Details
+  elevation +=(cnoise(vec3(
+    (_position.xz + 123.0) * 1.0,
+    0.0
+  )) * 0.2);
+
+  elevation *= 2.0;
+
+    return elevation;
+}
+
 void main()
 {
     vec4 modelPosition = modelMatrix * vec4(position, 1.0);
 
-    float evelation = cnoise(vec3(
-        modelPosition.x,
-        modelPosition.z,
-        0.0
-    ));
+    float elevation = getElevation(modelPosition.xyz);
 
-    modelPosition.y += evelation;
+    modelPosition.y += elevation;
 
 
     vec4 viewPosition = viewMatrix * modelPosition;
@@ -94,5 +111,5 @@ void main()
     gl_Position = projectionPosition;
 
     // Varyings
-    vElevation = evelation;
+    vElevation = elevation;
 }

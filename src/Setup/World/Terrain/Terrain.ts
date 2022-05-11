@@ -24,7 +24,7 @@ export default class Terrain {
     }
 
     setGeometry(): void {
-        this.geometry = new THREE.PlaneGeometry(1, 1, 100, 100);
+        this.geometry = new THREE.PlaneGeometry(1, 1, 1000, 1000);
     }
 
     setMaterial(): void {
