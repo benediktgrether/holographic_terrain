@@ -25,7 +25,7 @@ export default class Renderer {
             canvas: this.canvas,
             antialias: true
         });
-        this.instance.setClearColor(0x111111, 1);
+        this.instance.setClearColor(0x333333, 1);
         this.instance.outputEncoding = THREE.sRGBEncoding;
         this.instance.setSize(this.sizes.width, this.sizes.height);
         this.instance.setPixelRatio(this.sizes.pixelRatio);
