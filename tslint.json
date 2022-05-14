@@ -54,6 +54,7 @@
 		"use-strict": [false, "check-module", "check-function"],
 		"variable-name": [true, "check-format", "allow-leading-underscore"],
 		"whitespace": [true, "check-branch", "check-decl", "check-operator", "check-separator", "check-type"],
+		"noImplicitAny": false,
 		"file-header": [false, "Autor: Jirka Dell'Oro-Friedl"]
 	}
 }

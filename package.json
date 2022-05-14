@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "cannon": "^0.6.2",
+    "guify": "^0.15.1",
     "three": "^0.138.2",
     "tslint": "^6.1.3",
     "vite-plugin-glsl": "^0.1.2"

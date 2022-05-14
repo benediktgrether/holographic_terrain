@@ -13,10 +13,12 @@ export default class Terrain {
     scene: THREE.Scene;
     mesh: THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>;
     texture: any;
+    debug: import("../../Utils/Debug").default;
 
     constructor() {
         this.threeApp = new ThreeApp();
         this.scene = this.threeApp.scene;
+        this.debug = this.threeApp.debug;
 
         // Set Texture
         this.initTerrainTexture();
@@ -27,6 +29,8 @@ export default class Terrain {
         //this.setTexture();
         this.setRotation();
         this.setMesh();
+
+        this.setDebug();
     }
 
     initTerrainTexture(): void {
@@ -34,6 +38,7 @@ export default class Terrain {
         this.texture.linesCount = 5;
         this.texture.bigLinewidth = 0.04;
         this.texture.smallLinewidth = 0.01;
+        this.texture.alpha = 0.5;
         this.texture.width = 32;
         this.texture.height = 128;
         this.texture.canvas = document.createElement("canvas");
@@ -77,12 +82,15 @@ export default class Terrain {
             for (let i: number = 0; i < (this.texture.linesCount - 1); i++) {
                 this.setContext(
                     "#ffffff",
-                    0.5,
+                    this.texture.alpha,
                     smallLinesHeight * (i + 1),
                     actualSmallLineWidth
 
                 );
             }
+
+            this.texture.instance.needsUpdate = true;
+
         };
         this.texture.update();
     }
@@ -137,5 +145,43 @@ export default class Terrain {
         this.mesh = new THREE.Mesh(this.geometry, this.material);
         this.mesh.scale.set(10, 10, 10);
         this.scene.add(this.mesh);
+    }
+
+    setDebug(): void {
+        this.debug.gui.add(this.texture, "linesCount")
+            .min(1)
+            .max(10)
+            .step(1)
+            .name("Lines Count")
+            .onChange(() => {
+                this.texture.update();
+            });
+
+        this.debug.gui.add(this.texture, "bigLinewidth")
+            .min(0)
+            .max(0.1)
+            .step(0.001)
+            .name("Big Line Width")
+            .onChange(() => {
+                this.texture.update();
+            });
+
+        this.debug.gui.add(this.texture, "smallLinewidth")
+            .min(0)
+            .max(0.1)
+            .step(0.001)
+            .name("Small Line Width")
+            .onChange(() => {
+                this.texture.update();
+            });
+
+        this.debug.gui.add(this.texture, "alpha")
+            .min(0)
+            .max(1)
+            .step(0.001)
+            .name("Small Line Alpha")
+            .onChange(() => {
+                this.texture.update();
+            });
     }
 }
