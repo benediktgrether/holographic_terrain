@@ -16,7 +16,7 @@ export default class World {
 
     }
 
-    // update(): void {
-
-    // }
+    update(): void {
+        this.terrain.update();
+    }
 }

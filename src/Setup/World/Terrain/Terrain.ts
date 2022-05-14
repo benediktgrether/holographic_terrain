@@ -14,11 +14,13 @@ export default class Terrain {
     mesh: THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>;
     texture: any;
     debug: import("../../Utils/Debug").default;
+    time: import("../../Utils/Time").default;
 
     constructor() {
         this.threeApp = new ThreeApp();
         this.scene = this.threeApp.scene;
         this.debug = this.threeApp.debug;
+        this.time = this.threeApp.time;
 
         // Set Texture
         this.initTerrainTexture();
@@ -54,6 +56,7 @@ export default class Terrain {
         this.texture.context = this.texture.canvas.getContext("2d");
 
         this.texture.instance = new THREE.CanvasTexture(this.texture.canvas);
+        this.texture.uElevation = 2;
 
         // Repeat the Texture for Terrain Outlines
         this.texture.instance.wrapS = THREE.RepeatWrapping;
@@ -134,7 +137,9 @@ export default class Terrain {
 
             uniforms: {
                 uTexture: { value: this.texture.instance },
-                uElevation: { value: 2 }
+                uElevation: { value: 2 },
+                uTextureFrequency: { value: 10 },
+                uTime: { value: 0 }
             }
         });
     }
@@ -149,8 +154,16 @@ export default class Terrain {
         this.scene.add(this.mesh);
     }
 
+    update(): void {
+
+        // Update terrain
+        this.material.uniforms.uTime.value = this.time.elapsed * 0.001;
+    }
+
     setDebug(): void {
-        this.debug.gui.add(this.texture, "linesCount")
+
+        const texturesGui: any = this.debug.gui.addFolder("textures");
+        texturesGui.add(this.texture, "linesCount")
             .min(1)
             .max(10)
             .step(1)
@@ -159,7 +172,7 @@ export default class Terrain {
                 this.texture.update();
             });
 
-        this.debug.gui.add(this.texture, "bigLinewidth")
+        texturesGui.add(this.texture, "bigLinewidth")
             .min(0)
             .max(0.1)
             .step(0.001)
@@ -168,7 +181,7 @@ export default class Terrain {
                 this.texture.update();
             });
 
-        this.debug.gui.add(this.texture, "smallLinewidth")
+        texturesGui.add(this.texture, "smallLinewidth")
             .min(0)
             .max(0.1)
             .step(0.001)
@@ -177,7 +190,7 @@ export default class Terrain {
                 this.texture.update();
             });
 
-        this.debug.gui.add(this.texture, "alpha")
+        texturesGui.add(this.texture, "alpha")
             .min(0)
             .max(1)
             .step(0.001)
@@ -185,5 +198,20 @@ export default class Terrain {
             .onChange(() => {
                 this.texture.update();
             });
+
+        texturesGui.add(this.material.uniforms.uElevation, "value")
+            .min(0)
+            .max(5)
+            .step(1)
+            .name("uElevation")
+            .onChange(() => {
+                console.log(this.material.uniforms.uElevation);
+            });
+
+        texturesGui.add(this.material.uniforms.uTextureFrequency, "value")
+            .min(0.1)
+            .max(50)
+            .step(0.01)
+            .name("uTextureFrequency");
     }
 }

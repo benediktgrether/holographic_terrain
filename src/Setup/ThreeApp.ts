@@ -64,7 +64,7 @@ export default class ThreeApp {
 
     update(): void {
         this.camera.update();
-        //this.world.update();
+        this.world.update();
         this.renderer.update();
     }
 }
