@@ -30,7 +30,9 @@ export default class Terrain {
         this.setRotation();
         this.setMesh();
 
-        this.setDebug();
+        if (this.debug.active) {
+            this.setDebug();
+        }
     }
 
     initTerrainTexture(): void {
