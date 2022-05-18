@@ -104,7 +104,7 @@ export default class Terrain {
             // Small Lines
             for (let i: number = 0; i < (this.texture.linesCount - 1); i++) {
                 this.setContext(
-                    "#ffffff",
+                    "#00ffff",
                     this.texture.alpha,
                     smallLinesHeight * (i + 1),
                     actualSmallLineWidth

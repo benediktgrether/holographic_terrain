@@ -6,4 +6,4 @@ vec3 hslToRgb(in vec3 c)
     return c.z + c.y * (rgb-0.5)*(1.0-abs(2.0*c.z-1.0));
 }
 
-#pragma glslify: export(hslToRgb)
+#pragma glsf: export(hslToRgb)
