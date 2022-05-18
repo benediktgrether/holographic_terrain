@@ -4,7 +4,10 @@ import ThreeApp from "./ThreeApp";
 //Bokeh -> When it needed export in seperated file
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
-import { BokehPass } from "three/examples/jsm/postprocessing/BokehPass";
+
+// @ts-ignore
+import  BokehPass  from "./Passes/BokehPass.js";
+
 
 export default class Renderer {
 
@@ -18,6 +21,7 @@ export default class Renderer {
     renderTarget: THREE.WebGLMultipleRenderTargets;
     debug: import("./Utils/Debug").default;
     bokehPass: BokehPass;
+    world: any;
 
     constructor() {
         this.threeApp = new ThreeApp();
@@ -26,6 +30,7 @@ export default class Renderer {
         this.scene = this.threeApp.scene;
         this.camera = this.threeApp.camera;
         this.debug = this.threeApp.debug;
+        this.world = this.threeApp.world;
 
         this.setRenderer();
         this.setPostProcessing();
@@ -77,6 +82,8 @@ export default class Renderer {
             height: this.sizes.height * this.sizes.pixelRatio
         });
 
+        //this.bokehPass.enabled = false;
+        // this.bokehPass.materialDepth = this.threeApp.world.terrain.depthMaterial;
         this.effectComposer.addPass(this.bokehPass);
     }
 

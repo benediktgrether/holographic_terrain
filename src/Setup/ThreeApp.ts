@@ -8,6 +8,9 @@ import Renderer from "./Renderer";
 import World from "./World/World";
 import Resources from "./Utils/Resources";
 
+// @ts-ignore
+// import BokehPass from "./Passes/BokehPass";
+
 // tslint:disable-next-line: no-any
 let instance: any = null;
 
@@ -21,6 +24,7 @@ export default class ThreeApp {
     world: World;
     resources: Resources;
     debug: Debug;
+    // bokehPass: BokehPass;
 
 
     constructor(_canvas?: HTMLCanvasElement) {
@@ -43,8 +47,11 @@ export default class ThreeApp {
 
         this.camera = new Camera();
         this.renderer = new Renderer();
-
         this.world = new World();
+
+
+        // this.bokehPass = BokehPass;
+        // console.log(this.bokehPass);
 
         // Size resize event
         this.sizes.on("resize", () => {

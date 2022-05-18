@@ -4,7 +4,13 @@ import ThreeApp from "../../ThreeApp";
 // @ts-ignore
 import terrainVertexShader from "../../Shaders/Terrain/vertex.glsl";
 // @ts-ignore
-import terrainFragmentxShader from "../../Shaders/Terrain/fragment.glsl";
+import terrainFragmentShader from "../../Shaders/Terrain/fragment.glsl";
+// @ts-ignore
+import terrainDepthVertextShader from "../../Shaders/TerrainDepth/vertex.glsl";
+// @ts-ignore
+import terrainDepthFragmentShader from "../../Shaders/TerrainDepth/fragment.glsl";
+import Renderer from "../../Renderer";
+
 
 export default class Terrain {
     threeApp: ThreeApp;
@@ -15,12 +21,16 @@ export default class Terrain {
     texture: any;
     debug: import("../../Utils/Debug").default;
     time: import("../../Utils/Time").default;
+    // depthMaterial: THREE.ShaderMaterial;
+    depthMaterial: any;
+    renderer: Renderer;
 
     constructor() {
         this.threeApp = new ThreeApp();
         this.scene = this.threeApp.scene;
         this.debug = this.threeApp.debug;
         this.time = this.threeApp.time;
+        this.renderer = this.threeApp.renderer;
 
         // Set Texture
         this.initTerrainTexture();
@@ -30,6 +40,7 @@ export default class Terrain {
         this.setMaterial();
         //this.setTexture();
         this.setRotation();
+        this.setDepthMaterial();
         this.setMesh();
 
         if (this.debug.active) {
@@ -63,6 +74,13 @@ export default class Terrain {
         this.texture.instance.wrapT = THREE.RepeatWrapping;
 
         this.texture.instance.magFilter = THREE.NearestFilter;
+
+        this.texture.uniforms = {
+            uTexture: { value: this.texture.instance },
+            uElevation: { value: 2 },
+            uTextureFrequency: { value: 10 },
+            uTime: { value: 0 }
+        };
 
         this.setTerrainTextureUpdate();
     }
@@ -133,14 +151,9 @@ export default class Terrain {
             // blending: THREE.AdditiveBlending,
             side: THREE.DoubleSide,
             vertexShader: terrainVertexShader,
-            fragmentShader: terrainFragmentxShader,
+            fragmentShader: terrainFragmentShader,
 
-            uniforms: {
-                uTexture: { value: this.texture.instance },
-                uElevation: { value: 2 },
-                uTextureFrequency: { value: 10 },
-                uTime: { value: 0 }
-            }
+            uniforms: this.texture.uniforms
         });
     }
 
@@ -148,16 +161,43 @@ export default class Terrain {
         this.geometry.rotateX(- Math.PI * 0.5);
     }
 
+    setDepthMaterial(): void {
+
+        // tslint:disable-next-line: typedef
+        const uniforms = THREE.UniformsUtils.merge([
+            THREE.UniformsLib.common,
+            THREE.UniformsLib.displacementmap
+        ]);
+
+        for (const uniformKey in this.texture.uniforms) {
+            uniforms[uniformKey] = this.texture.uniforms[uniformKey];
+        }
+
+        this.depthMaterial = new THREE.ShaderMaterial({
+            uniforms: uniforms,
+            vertexShader: terrainDepthVertextShader,
+            fragmentShader: terrainDepthFragmentShader
+        });
+
+        this.depthMaterial.depthPacking = THREE.RGBADepthPacking;
+        this.depthMaterial.blending = THREE.NoBlending;
+
+        // Set Depth Material to bokeh Pass
+        // this.renderer.bokehPass.materialDepth = this.depthMaterial;
+
+    }
+
     setMesh(): void {
         this.mesh = new THREE.Mesh(this.geometry, this.material);
         this.mesh.scale.set(10, 10, 10);
+        this.mesh.userData.depthMaterial = this.depthMaterial;
         this.scene.add(this.mesh);
     }
 
     update(): void {
 
         // Update terrain
-        this.material.uniforms.uTime.value = this.time.elapsed * 0.001;
+        this.texture.uniforms.uTime.value = this.time.elapsed * 0.001;
     }
 
     setDebug(): void {
@@ -199,16 +239,16 @@ export default class Terrain {
                 this.texture.update();
             });
 
-        texturesGui.add(this.material.uniforms.uElevation, "value")
+        texturesGui.add(this.texture.uniforms.uElevation, "value")
             .min(0)
             .max(5)
             .step(1)
             .name("uElevation")
             .onChange(() => {
-                console.log(this.material.uniforms.uElevation);
+                console.log(this.texture.uniforms.uElevation);
             });
 
-        texturesGui.add(this.material.uniforms.uTextureFrequency, "value")
+        texturesGui.add(this.texture.uniforms.uTextureFrequency, "value")
             .min(0.1)
             .max(50)
             .step(0.01)
