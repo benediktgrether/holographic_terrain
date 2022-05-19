@@ -1,6 +1,8 @@
 uniform sampler2D uTexture;
 uniform float uTextureFrequency;
 
+uniform float uTime;
+uniform float uHslTimeFrequency;
 uniform float uHslHue;
 uniform float uHslHueOffset;
 uniform float uHslHueFrequency;
@@ -59,8 +61,11 @@ vec3 hslToRgb(in vec3 c)
 
 vec3 getRainbowColor(){
 
-    float hue = uHslHueOffset + cnoise(vUv * uHslHueFrequency) * uHslHue;
-    float lightness = uHslLightness + cnoise(vUv  * uHslLightnessFrequency) * uHslLightnessVariation;
+    vec2 uv = vUv;
+    uv.y += uTime * uHslTimeFrequency;
+
+    float hue = uHslHueOffset + cnoise(uv * uHslHueFrequency) * uHslHue;
+    float lightness = uHslLightness + cnoise(uv  * uHslLightnessFrequency) * uHslLightnessVariation;
     vec3 hslColor = vec3(hue, 1.0, lightness);
     vec3 rainbowColor = hslToRgb(hslColor);
     return rainbowColor;

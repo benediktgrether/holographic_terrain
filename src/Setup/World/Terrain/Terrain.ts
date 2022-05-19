@@ -80,6 +80,7 @@ export default class Terrain {
             uElevation: { value: 2 },
             uTextureFrequency: { value: 10 },
             uTime: { value: 0 },
+            uHslTimeFrequency: {value: 0.1},
             uHslHue: { value: 1.0 },
             uHslHueOffset: { value: 0.0 },
             uHslHueFrequency: { value: 10.0},
@@ -259,6 +260,12 @@ export default class Terrain {
             .max(50)
             .step(0.01)
             .name("uTextureFrequency");
+
+        texturesGui.add(this.texture.uniforms.uHslTimeFrequency, "value")
+            .min(0)
+            .max(1)
+            .step(0.001)
+            .name("uHslTimeFrequency");
 
         texturesGui.add(this.texture.uniforms.uHslHue, "value")
             .min(0)
