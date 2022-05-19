@@ -65,7 +65,7 @@ vec3 getRainbowColor(){
     uv.y += uTime * uHslTimeFrequency;
 
     float hue = uHslHueOffset + cnoise(uv * uHslHueFrequency) * uHslHue;
-    float lightness = uHslLightness + cnoise(uv  * uHslLightnessFrequency) * uHslLightnessVariation;
+    float lightness = uHslLightness + cnoise(uv  * uHslLightnessFrequency + 1234.5) * uHslLightnessVariation;
     vec3 hslColor = vec3(hue, 1.0, lightness);
     vec3 rainbowColor = hslToRgb(hslColor);
     return rainbowColor;
@@ -80,5 +80,12 @@ void main() {
 
     vec3 color = mix(uColor, rainbowColor, textureColor.r);
 
-    gl_FragColor = vec4(color, textureColor.a);
+    //Set the Alpha for the corners
+    float fadeSideAmplitude = 0.2;
+    float sideAlpha =  1.0 - max(
+        smoothstep(0.5 - fadeSideAmplitude, 0.5, abs(vUv.x -0.5)),
+        smoothstep(0.5 - fadeSideAmplitude, 0.5, abs(vUv.y -0.5)));
+
+    gl_FragColor = vec4(color, textureColor.a * sideAlpha);
+    // gl_FragColor = vec4(vec3(sideAlpha), 1.0);
 }
