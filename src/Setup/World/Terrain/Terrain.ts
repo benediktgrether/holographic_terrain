@@ -51,7 +51,7 @@ export default class Terrain {
     initTerrainTexture(): void {
         this.texture = {};
         this.texture.linesCount = 5;
-        this.texture.bigLinewidth = 0.04;
+        this.texture.bigLinewidth = 0.08;
         this.texture.smallLinewidth = 0.01;
         this.texture.alpha = 0.5;
         this.texture.width = 32;
@@ -79,7 +79,13 @@ export default class Terrain {
             uTexture: { value: this.texture.instance },
             uElevation: { value: 2 },
             uTextureFrequency: { value: 10 },
-            uTime: { value: 0 }
+            uTime: { value: 0 },
+            uHslHue: { value: 1.0 },
+            uHslHueOffset: { value: 0.0 },
+            uHslHueFrequency: { value: 10.0},
+            uHslLightness: { value: 0.75},
+            uHslLightnessVariation: { value: 0.25 },
+            uHslLightnessFrequency: { value: 20.0 }
         };
 
         this.setTerrainTextureUpdate();
@@ -214,7 +220,7 @@ export default class Terrain {
 
         texturesGui.add(this.texture, "bigLinewidth")
             .min(0)
-            .max(0.1)
+            .max(0.5)
             .step(0.001)
             .name("Big Line Width")
             .onChange(() => {
@@ -253,5 +259,41 @@ export default class Terrain {
             .max(50)
             .step(0.01)
             .name("uTextureFrequency");
+
+        texturesGui.add(this.texture.uniforms.uHslHue, "value")
+            .min(0)
+            .max(1)
+            .step(0.001)
+            .name("uHslHue");
+
+        texturesGui.add(this.texture.uniforms.uHslHueOffset, "value")
+            .min(0)
+            .max(1)
+            .step(0.001)
+            .name("uHslHueOffset");
+
+        texturesGui.add(this.texture.uniforms.uHslHueFrequency, "value")
+            .min(0)
+            .max(50)
+            .step(0.01)
+            .name("uHslHueFrequency");
+
+        texturesGui.add(this.texture.uniforms.uHslLightness, "value")
+            .min(0)
+            .max(1)
+            .step(0.001)
+            .name("uHslLightness");
+
+        texturesGui.add(this.texture.uniforms.uHslLightnessVariation, "value")
+            .min(0)
+            .max(1)
+            .step(0.001)
+            .name("uHslLightnessVariation");
+
+        texturesGui.add(this.texture.uniforms.uHslLightnessFrequency, "value")
+            .min(0)
+            .max(50)
+            .step(0.01)
+            .name("uHslLightnessFrequency");
     }
 }

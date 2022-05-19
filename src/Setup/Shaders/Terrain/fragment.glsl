@@ -1,5 +1,13 @@
 uniform sampler2D uTexture;
 uniform float uTextureFrequency;
+
+uniform float uHslHue;
+uniform float uHslHueOffset;
+uniform float uHslHueFrequency;
+uniform float uHslLightness;
+uniform float uHslLightnessVariation;
+uniform float uHslLightnessFrequency;
+
 varying float vElevation;
 varying vec2 vUv;
 
@@ -51,8 +59,9 @@ vec3 hslToRgb(in vec3 c)
 
 vec3 getRainbowColor(){
 
-    float hue = cnoise(vUv * 10.0);
-    vec3 hslColor = vec3(hue, 1.0, 0.5);
+    float hue = uHslHueOffset + cnoise(vUv * uHslHueFrequency) * uHslHue;
+    float lightness = uHslLightness + cnoise(vUv  * uHslLightnessFrequency) * uHslLightnessVariation;
+    vec3 hslColor = vec3(hue, 1.0, lightness);
     vec3 rainbowColor = hslToRgb(hslColor);
     return rainbowColor;
 }
@@ -67,13 +76,4 @@ void main() {
     vec3 color = mix(uColor, rainbowColor, textureColor.r);
 
     gl_FragColor = vec4(color, textureColor.a);
-
-    //float elevation = vElevation + 0.5;
-
-    // float alpha = mod(vElevation * 10.0, 1.0);
-    // alpha = step(0.95, alpha);
-
-    // gl_FragColor = vec4(1.0, 1.0, 1.0, alpha);
-
-    //gl_FragColor = vec4(elevation, elevation, elevation, 1.0);
 }
