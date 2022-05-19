@@ -22,6 +22,7 @@ export default class Renderer {
     debug: import("./Utils/Debug").default;
     bokehPass: BokehPass;
     world: any;
+    clearColorVariable: any
 
     constructor() {
         this.threeApp = new ThreeApp();
@@ -32,6 +33,8 @@ export default class Renderer {
         this.debug = this.threeApp.debug;
         this.world = this.threeApp.world;
 
+        this.setClearColor();
+
         this.setRenderer();
         this.setPostProcessing();
 
@@ -40,12 +43,18 @@ export default class Renderer {
         }
     }
 
+    setClearColor(): void {
+        this.clearColorVariable = {};
+        this.clearColorVariable.clearColor = "#080024";
+        console.log(this.clearColorVariable.clearColor);
+    }
+
     setRenderer(): void {
         this.renderer = new THREE.WebGLRenderer({
             canvas: this.canvas,
             antialias: true
         });
-        this.renderer.setClearColor(0x333333, 1);
+        this.renderer.setClearColor(this.clearColorVariable.clearColor, 1);
         this.renderer.outputEncoding = THREE.sRGBEncoding;
         this.renderer.setSize(this.sizes.width, this.sizes.height);
         this.renderer.setPixelRatio(this.sizes.pixelRatio);
@@ -127,5 +136,10 @@ export default class Renderer {
             .max(0.02)
             .step(0.0001)
             .name("maxblur");
+
+        this.debug.gui.addColor(this.clearColorVariable, "clearColor")
+            .onChange(() => {
+                this.renderer.setClearColor(this.clearColorVariable.clearColor);
+            });
     }
 }

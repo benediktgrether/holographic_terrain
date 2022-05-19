@@ -210,6 +210,7 @@ export default class Terrain {
     setDebug(): void {
 
         const texturesGui: any = this.debug.gui.addFolder("textures");
+        const hslGui: any = this.debug.gui.addFolder("hls");
         texturesGui.add(this.texture, "linesCount")
             .min(1)
             .max(10)
@@ -261,43 +262,43 @@ export default class Terrain {
             .step(0.01)
             .name("uTextureFrequency");
 
-        texturesGui.add(this.texture.uniforms.uHslTimeFrequency, "value")
+        hslGui.add(this.texture.uniforms.uHslTimeFrequency, "value")
             .min(0)
             .max(1)
             .step(0.001)
             .name("uHslTimeFrequency");
 
-        texturesGui.add(this.texture.uniforms.uHslHue, "value")
+        hslGui.add(this.texture.uniforms.uHslHue, "value")
             .min(0)
             .max(1)
             .step(0.001)
             .name("uHslHue");
 
-        texturesGui.add(this.texture.uniforms.uHslHueOffset, "value")
+        hslGui.add(this.texture.uniforms.uHslHueOffset, "value")
             .min(0)
             .max(1)
             .step(0.001)
             .name("uHslHueOffset");
 
-        texturesGui.add(this.texture.uniforms.uHslHueFrequency, "value")
+        hslGui.add(this.texture.uniforms.uHslHueFrequency, "value")
             .min(0)
             .max(50)
             .step(0.01)
             .name("uHslHueFrequency");
 
-        texturesGui.add(this.texture.uniforms.uHslLightness, "value")
+        hslGui.add(this.texture.uniforms.uHslLightness, "value")
             .min(0)
             .max(1)
             .step(0.001)
             .name("uHslLightness");
 
-        texturesGui.add(this.texture.uniforms.uHslLightnessVariation, "value")
+        hslGui.add(this.texture.uniforms.uHslLightnessVariation, "value")
             .min(0)
             .max(1)
             .step(0.001)
             .name("uHslLightnessVariation");
 
-        texturesGui.add(this.texture.uniforms.uHslLightnessFrequency, "value")
+        hslGui.add(this.texture.uniforms.uHslLightnessFrequency, "value")
             .min(0)
             .max(50)
             .step(0.01)
