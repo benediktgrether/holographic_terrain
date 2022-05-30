@@ -39,6 +39,10 @@ float cnoise(vec2 P)
 }
 
 uniform float uElevation;
+uniform float uElevationDetails;
+uniform float uElevationGeneral;
+uniform float uElevationValley;
+uniform float uElevationValleyFrequency;
 uniform float uTime;
 
 varying float vElevation;
@@ -46,22 +50,29 @@ varying vec2 vUv;
 
 float getElevation(vec2 _position) {
 
-  float elevation = 0.0;
+    float elevation = 0.0;
 
-  // Position
-  vec2 position = _position;
-  position.x += uTime * 0.03;
-  position.y += uTime * 0.0;
+    // Position
+    vec2 position = _position;
+    position.x += uTime * 0.03;
+    position.y += uTime * 0.0;
 
-  // General Elevation
-  elevation += cnoise(position * 0.3) * 0.5;
+    
+    // Valley
+    //   elevation += pow(smoothstep(0.0, 4.0, abs(position.y)), 3.0);
+    float valleyStrenght = cos(position.y * uElevationValleyFrequency + 3.1415) * 0.5 + 0.5;
+    elevation += valleyStrenght * uElevationValley;
 
-  // Smaller Details
-  elevation +=(cnoise(position + 123.0) * 0.2);
+    // General Elevation
+    elevation += cnoise(position * 0.3) * uElevationGeneral * (valleyStrenght + 0.1);
 
-  elevation *= uElevation;
+    // Smaller Details
+    elevation +=cnoise(position + 123.0) * uElevationDetails * (valleyStrenght + 0.1);
 
-    return elevation;
+
+    elevation *= uElevation;
+
+        return elevation;
 }
 
 void main()

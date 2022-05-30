@@ -79,6 +79,11 @@ export default class Terrain {
             uTexture: { value: this.texture.instance },
             uElevation: { value: 2 },
             uTextureFrequency: { value: 10 },
+            uElevationValley: { value: 0.2 },
+            uElevationValleyFrequency: { value: 1.5 },
+            uTextureOffset: { value: 0.585 },
+            uElevationDetails: { value: 0.4},
+            uElevationGeneral: { value: 0.2 },
             uTime: { value: 0 },
             uHslTimeFrequency: {value: 0.1},
             uHslHue: { value: 1.0 },
@@ -251,16 +256,43 @@ export default class Terrain {
             .min(0)
             .max(5)
             .step(1)
-            .name("uElevation")
-            .onChange(() => {
-                console.log(this.texture.uniforms.uElevation);
-            });
+            .name("uElevation");
+
+        texturesGui.add(this.texture.uniforms.uElevationValleyFrequency, "value")
+            .min(0)
+            .max(10)
+            .step(0.001)
+            .name("uElevationValleyFrequency");
 
         texturesGui.add(this.texture.uniforms.uTextureFrequency, "value")
             .min(0.1)
             .max(50)
             .step(0.01)
             .name("uTextureFrequency");
+
+        texturesGui.add(this.texture.uniforms.uElevationDetails, "value")
+            .min(0)
+            .max(1)
+            .step(0.001)
+            .name("uElevationDetails");
+
+        texturesGui.add(this.texture.uniforms.uElevationGeneral, "value")
+            .min(0)
+            .max(1)
+            .step(0.001)
+            .name("uElevationGeneral");
+
+        texturesGui.add(this.texture.uniforms.uElevationValley, "value")
+            .min(0)
+            .max(1)
+            .step(0.001)
+            .name("uElevationValley");
+
+        texturesGui.add(this.texture.uniforms.uTextureOffset, "value")
+            .min(0.)
+            .max(1)
+            .step(0.001)
+            .name("uTextureOffset");
 
         hslGui.add(this.texture.uniforms.uHslTimeFrequency, "value")
             .min(0)
