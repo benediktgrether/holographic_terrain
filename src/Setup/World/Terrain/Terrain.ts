@@ -9,7 +9,6 @@ import terrainFragmentShader from "../../Shaders/Terrain/fragment.glsl";
 import terrainDepthVertextShader from "../../Shaders/TerrainDepth/vertex.glsl";
 // @ts-ignore
 import terrainDepthFragmentShader from "../../Shaders/TerrainDepth/fragment.glsl";
-import Renderer from "../../Renderer";
 
 
 export default class Terrain {
@@ -23,14 +22,12 @@ export default class Terrain {
     time: import("../../Utils/Time").default;
     // depthMaterial: THREE.ShaderMaterial;
     depthMaterial: any;
-    renderer: Renderer;
 
     constructor() {
         this.threeApp = new ThreeApp();
         this.scene = this.threeApp.scene;
         this.debug = this.threeApp.debug;
         this.time = this.threeApp.time;
-        this.renderer = this.threeApp.renderer;
 
         // Set Texture
         this.initTerrainTexture();
@@ -50,11 +47,12 @@ export default class Terrain {
 
     initTerrainTexture(): void {
         this.texture = {};
+        this.texture.visible = false;
         this.texture.linesCount = 5;
         this.texture.bigLinewidth = 0.08;
         this.texture.smallLinewidth = 0.01;
         this.texture.alpha = 0.5;
-        this.texture.width = 32;
+        this.texture.width = 1;
         this.texture.height = 128;
         this.texture.canvas = document.createElement("canvas");
         this.texture.canvas.width = this.texture.width;
@@ -62,8 +60,14 @@ export default class Terrain {
         this.texture.canvas.style.position = "fixed";
         this.texture.canvas.style.top = 0;
         this.texture.canvas.style.left = 0;
+        this.texture.canvas.style.width = "50px";
+        this.texture.canvas.style.height = `${this.texture.height}px`;
         this.texture.canvas.style.zIndex = 1;
-        document.body.append(this.texture.canvas);
+
+        if (this.texture.visible) {
+            document.body.append(this.texture.canvas);
+        }
+
         this.texture.context = this.texture.canvas.getContext("2d");
 
         this.texture.instance = new THREE.CanvasTexture(this.texture.canvas);
@@ -79,11 +83,13 @@ export default class Terrain {
             uTexture: { value: this.texture.instance },
             uElevation: { value: 2 },
             uTextureFrequency: { value: 10 },
+            uElevationGeneral: { value: 0.2 },
+            uElevationGeneralFrequency: { value: 0.2 },
             uElevationValley: { value: 0.2 },
             uElevationValleyFrequency: { value: 1.5 },
             uTextureOffset: { value: 0.585 },
             uElevationDetails: { value: 0.4},
-            uElevationGeneral: { value: 0.2 },
+            uElevationDetailsFrequency: { value: 2.012 },
             uTime: { value: 0 },
             uHslTimeFrequency: {value: 0.1},
             uHslHue: { value: 1.0 },
@@ -216,6 +222,17 @@ export default class Terrain {
 
         const texturesGui: any = this.debug.gui.addFolder("textures");
         const hslGui: any = this.debug.gui.addFolder("hls");
+
+        texturesGui.add(this.texture, "visible")
+        .name("visible")
+        .onChange(() => {
+            if (this.texture.visible) {
+                document.body.append(this.texture.canvas);
+            } else {
+                document.body.removeChild(this.texture.canvas);
+            }
+        });
+
         texturesGui.add(this.texture, "linesCount")
             .min(1)
             .max(10)
@@ -264,6 +281,12 @@ export default class Terrain {
             .step(0.001)
             .name("uElevationValleyFrequency");
 
+        texturesGui.add(this.texture.uniforms.uElevationDetailsFrequency, "value")
+            .min(0)
+            .max(10)
+            .step(0.001)
+            .name("uElevationDetailsFrequency");
+
         texturesGui.add(this.texture.uniforms.uTextureFrequency, "value")
             .min(0.1)
             .max(50)
@@ -281,6 +304,12 @@ export default class Terrain {
             .max(1)
             .step(0.001)
             .name("uElevationGeneral");
+
+        texturesGui.add(this.texture.uniforms.uElevationGeneralFrequency, "value")
+            .min(0)
+            .max(10)
+            .step(0.001)
+            .name("uElevationGeneralFrequency");
 
         texturesGui.add(this.texture.uniforms.uElevationValley, "value")
             .min(0)

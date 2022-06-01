@@ -7,7 +7,7 @@ export default class Debug {
         this.active = window.location.hash === "#debug";
 
         if (this.active) {
-            this.gui = new dat.GUI();
+            this.gui = new dat.GUI({ width: 400});
         }
     }
 }

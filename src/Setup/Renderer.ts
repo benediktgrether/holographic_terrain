@@ -84,7 +84,7 @@ export default class Renderer {
         // Bokeh Pass
         this.bokehPass = new BokehPass(this.scene, this.camera.instance, {
             focus: 1.0,
-            aperture: 0.025,
+            aperture: 0.015,
             maxblur: 0.01,
 
             width: this.sizes.width * this.sizes.pixelRatio,
