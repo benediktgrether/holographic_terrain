@@ -94,6 +94,9 @@ export default class Renderer {
         //this.bokehPass.enabled = false;
         // this.bokehPass.materialDepth = this.threeApp.world.terrain.depthMaterial;
         this.effectComposer.addPass(this.bokehPass);
+
+        console.log(this.bokehPass.uniforms.focus);
+        this.bokehPass.uniforms.focus.value = this.camera.cameraCoordinates[2].focus;
     }
 
     resize(): void {
