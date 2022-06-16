@@ -11,6 +11,8 @@ export default class Camera {
     controls: OrbitControls;
     sizes: import("./Utils/Sizes").default;
     cameraCoordinates: { position: { x: number; y: number; z: number; }; rotation: { x: number; y: number; z: number; }; focus: number; }[];
+    debug: import("d:/dev/holographic_terrain/src/Setup/Utils/Debug").default;
+    parallax: any;
 
 
     constructor() {
@@ -18,6 +20,7 @@ export default class Camera {
         this.sizes = this.threeApp.sizes;
         this.scene = this.threeApp.scene;
         this.canvas = this.threeApp.canvas;
+        this.debug = this.threeApp.debug;
 
         // Coordinates
         this.cameraCoordinates = [
@@ -77,7 +80,12 @@ export default class Camera {
 
         this.setInstance();
         this.setOrbitControls();
-        this.changeView(0);
+        this.changeView(1);
+        this.setParallax();
+
+        // if (this.debug.active) {
+        //     this.setDebug();
+        // }
     }
 
     setInstance(): void {
@@ -102,6 +110,44 @@ export default class Camera {
         this.controls = new OrbitControls(this.instance, this.canvas);
         this.controls.enableDamping = true;
     }
+
+    setParallax(): void {
+        this.parallax = {};
+        this.parallax.target = {};
+        this.parallax.target.x = 0;
+        this.parallax.target.y = 0;
+        this.parallax.eased = {};
+        this.parallax.eased.x = 0;
+        this.parallax.eased.y = 0;
+
+        window.addEventListener("mousemove", (_event) => {
+            const x: number = _event.clientX / this.sizes.width - 0.5;
+            const y: number = _event.clientY / this.sizes.height - 0.5;
+
+            console.log(x, y);
+        });
+    }
+
+    // setDebug(): void {
+
+    //     const myObject = {
+    //         myFunction: function(): void {
+    //             console.log("test");
+    //             this.changeView();
+    //         }
+    //     };
+
+    //     const perspectiveChange: any = this.debug.gui.addFolder("perspectiveChange");
+
+    //     for (const _settingIndex in this.cameraCoordinates) {
+    //         console.log({_settingIndex});
+    //         perspectiveChange.add(myObject, "myFunction")
+    //         .name(`change(${_settingIndex})`);
+    //     }
+
+    //     // perspectiveChange.add(this.instance.position, "x")
+    //     //     .enable();
+    // }
 
     changeView(_index: number): void {
         this.instance.position.copy(this.cameraCoordinates[_index].position);
