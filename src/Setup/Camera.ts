@@ -3,7 +3,6 @@ import gsap from "gsap";
 import ThreeApp from "./ThreeApp";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
-console.log(gsap.to);
 
 export default class Camera {
     threeApp: ThreeApp;
