@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "cannon": "^0.6.2",
+    "gsap": "^3.10.4",
     "guify": "^0.15.1",
     "three": "^0.138.2",
     "tslint": "^6.1.3",

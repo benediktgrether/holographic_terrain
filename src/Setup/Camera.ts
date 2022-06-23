@@ -1,6 +1,9 @@
 import * as THREE from "three";
+import gsap from "gsap";
 import ThreeApp from "./ThreeApp";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+
+console.log(gsap.to);
 
 export default class Camera {
     threeApp: ThreeApp;
@@ -13,6 +16,8 @@ export default class Camera {
     cameraCoordinates: { position: { x: number; y: number; z: number; }; rotation: { x: number; y: number; z: number; }; focus: number; }[];
     debug: import("d:/dev/holographic_terrain/src/Setup/Utils/Debug").default;
     parallax: any;
+    cameraPosition: any;
+    time: import("d:/dev/holographic_terrain/src/Setup/Utils/Time").default;
 
 
     constructor() {
@@ -21,6 +26,7 @@ export default class Camera {
         this.scene = this.threeApp.scene;
         this.canvas = this.threeApp.canvas;
         this.debug = this.threeApp.debug;
+        this.time = this.threeApp.time;
 
         // Coordinates
         this.cameraCoordinates = [
@@ -80,7 +86,7 @@ export default class Camera {
 
         this.setInstance();
         this.setOrbitControls();
-        this.changeView(1);
+        this.changeView(0);
         this.setParallax();
 
         // if (this.debug.active) {
@@ -89,6 +95,12 @@ export default class Camera {
     }
 
     setInstance(): void {
+
+        this.cameraPosition = {};
+        this.cameraPosition.position = new THREE.Vector3();
+        this.cameraPosition.rotation = new THREE.Euler();
+        this.cameraPosition.rotation.reorder("YXZ");
+
         this.instance = new THREE.PerspectiveCamera(75, this.sizes.width / this.sizes.height, 0.1, 100);
 
         this.instance.rotation.reorder("YXZ");
@@ -119,12 +131,13 @@ export default class Camera {
         this.parallax.eased = {};
         this.parallax.eased.x = 0;
         this.parallax.eased.y = 0;
+        this.parallax.eased.multiplier = 0.1;
+        this.parallax.multiplier = 0.4;
 
         window.addEventListener("mousemove", (_event) => {
-            const x: number = _event.clientX / this.sizes.width - 0.5;
-            const y: number = _event.clientY / this.sizes.height - 0.5;
+            this.parallax.target.x = - (_event.clientX / this.sizes.width - 0.5) * this.parallax.multiplier;
+            this.parallax.target.y = (_event.clientY / this.sizes.height - 0.5) * this.parallax.multiplier;
 
-            console.log(x, y);
         });
     }
 
@@ -161,5 +174,17 @@ export default class Camera {
 
     update(): void {
         this.controls.update();
+
+
+        // this.instance.position.copy(this.cameraPosition.position);
+
+        // this.parallax.eased.x += (this.parallax.target.x - this.parallax.eased.x) * this.time.delta * this.parallax.eased.multiplier;
+        // this.parallax.eased.y += (this.parallax.target.y - this.parallax.eased.y) * this.time.delta * this.parallax.eased.multiplier;
+
+        // this.instance.translateX(this.parallax.eased.x);
+        // this.instance.translateY(this.parallax.eased.y);
+
+        // this.instance.rotation.x = this.cameraPosition.rotation.x;
+        // this.instance.rotation.y = this.cameraPosition.rotation.y;
     }
 }
